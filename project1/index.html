@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            margin-top: 20px;
+        }
+        .special {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(2, 1fr); 
+            margin-top: 20px;
+        }
+        .special img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+        }
+        .gallery img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fall 2024 CS 180 Project1</h1>
+    <h2 style="text-align: center;">Images of the Russian Empire:
+        Colorizing the Prokudin-Gorskii photo collection</h2>
+        <figure style="float: right;">
+            <img src="img/out_church.jpg" alt="Church", 
+                style="float: right; width: 300px; height: auto; margin-right: 20px; ">
+            <figcaption>Example Image: Church</figcaption>
+            <figcaption>Displacement: green:(0, 25), red:(-4, 58)</figcaption>
+        </figure>
+        <p>In this project, I implemented an image alignment technique using an image pyramid approach combined with Normalized Cross-Correlation (NCC) as the evaluation matrix. The algorithm employs a recursive approach where each level of the pyramid is sampled from the previous level, reducing the image size to one-quarter (half the width and half the height) of the previous layer.</p>
+    <p>The alignment process begins at the coarsest level of the pyramid, where the images are significantly downscaled and only have less then 200*200pi. In this level, we can do matching in a 31*31 square but only take a little time. NCC is used at each level to determine the best matching vector that aligns the two images. Once the optimal vector is found, it is passed up to the next finer level and then doubled. At each successive level, the algorithm refines the search by limiting the region of interest to a rectangular window centered around the vector passed from the previous layer, with a search radius of ±r( I used 4). This recursive refinement continues until the finest level is reached, where the final alignment vector is determined. On average, each images were processed in about 28 seconds, including two alignments to different color channels. This algorithm ensures a balance between computational efficiency and alignment precision.</p>
+    
+    <h2>Project Outcome</h2>
+    <p>The recursive alignment algorithm using the image pyramid and NCC was successfully implemented and tested on a diverse set of images. Most images in the dataset were successfully aligned, demonstrating the robustness of this method. However, one image (emir.tif) posed a challenge where the alignment did not converge as expected. </p>
+    <p>Overall, the project demonstrated that the recursive image pyramid approach combined with NCC provides a powerful and efficient solution for automatic image alignment. It worked effectively in most cases and offered opportunities for refinement in more challenging scenarios.</p>
+    <div class="gallery">
+        <figure>
+            <img src="img/out_monastery.jpg" alt="Monastery">
+            <figcaption>Monastery</figcaption>
+            <figcaption>Displacement: green:(2， -3), red:(2, 3)</figcaption>
+        </figure>
+
+        <figure>
+            <img src="img/out_tobolsk.jpg" alt="Tobolsk">
+            <figcaption>Tobolsk</figcaption>
+            <figcaption>Displacement: green:(3, 3), red:(3, 6)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_cathedral.jpg" alt="Cathedral">
+            <figcaption>Cathedral</figcaption>
+            <figcaption>Displacement: green:(-1, 1), red:(-1, 7)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_emir.jpg" alt="Emir">
+            <figcaption>Emir</figcaption>
+            <figcaption>Displacement: green:(24, 49), red:(-200, 0)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_harvesters.jpg" alt="Harvesters">
+            <figcaption>Harvesters</figcaption>
+            <figcaption>Displacement: green:(16, 60), red:(13, 124)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_lady.jpg" alt="Lady">
+            <figcaption>Lady</figcaption>
+            <figcaption>Displacement: green:(8, 53), red:(10, 117)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_melons.jpg" alt="Melons">
+            <figcaption>Melons</figcaption> 
+            <figcaption>Displacement: green:(8, 82), red:(12, 178)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_onion_church.jpg" alt="Onion Church">
+            <figcaption>Onion Church</figcaption>
+            <figcaption>Displacement: green:(26, 51), red:(36, 108)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_sculpture.jpg" alt="Sculpture">
+            <figcaption>Sculpture</figcaption>
+            <figcaption>Displacement: green:(-11, 33), red:(-26, 140)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_self_portrait.jpg" alt="Self Portrait">
+            <figcaption>Self Portrait</figcaption>
+            <figcaption>Displacement: green:(28, 78), red:(36, 176)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_three_generations.jpg" alt="Three Generations">
+            <figcaption>Three Generations</figcaption>
+            <figcaption>Displacement: green:(11, 54), red:(9, 112)</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_train.jpg" alt="Train">
+            <figcaption>Train</figcaption>
+            <figcaption>Displacement: green:(5, 43), red:(31, 87)</figcaption>
+        </figure>
+    </div>
+    <h2>Step Further</h2>
+    <h3>Apply Feature Detection</h3>
+    <figure style="float: right;">
+        <img src="img/edge_emir.jpg" alt="edge_detection", 
+            style="width: 400px; height: auto; ">
+        <figcaption style="font-size: 0.8em">The result of edge detection at each layer during pyramid processing</figcaption>
+        <figcaption style="font-size: 0.8em">(left：red channel;  right: blue channel)</figcaption>
+    </figure>
+    <p>While the image alignment method using Normalized Cross-Correlation (NCC) worked well for most images, “emir” image presented a challenge due to its unique characteristics. The main subject's clothing featured in a pure blue color with intricate patterns. This resulted in significant differences between the red and blue channels. When relying solely on NCC to compare brightness, these two parts appeared visually opposite, making alignment difficult.</p>
+    <p>To address this issue, I shifted my focus from brightness-based alignment to feature-based alignment. I introduced feature extraction techniques to handle such cases, particularly focusing on aligning the red and blue channels based on image features rather than just intensity values. For this purpose, I incorporated the <a href="https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html?ref=blog.roboflow.com">cv2.Canny</a> function to extract edges in the image.</p>
+    <p>Initially, I applied edge extraction to the entire image, but the results were unsatisfactory due to the large size and complexity of the image. The edge detection was not precise enough to yield meaningful alignment results. To improve the performance, I integrated edge extraction into each layer of the image pyramid. During the visualization of the pyramid processing, I noticed that edge extraction started to have a positive impact on the alignment, especially in capturing the key features of the main subject.</p>
+    <p>However, I observed that edges from the surrounding environment were affecting the results. To address this, I adjusted the two thresholds in the Canny edge detection function and cropped parts of the surrounding environment to focus the algorithm on the main subject. This adjustment allowed the algorithm to concentrate more on the key features of the subject, reducing the impact of irrelevant background details.</p>
+    <h4>Results and Insights</h4>
+    <p>Although this feature-based approach did not result in a perfect solution, it did show some promise. The red and blue channels were better aligned, demonstrating that edge-based feature extraction is a viable direction for further exploration. However, when applying this method to other images, the results were inconsistent, suggesting that this edge-based alignment algorithm still requires significant refinement to achieve reliable performance across different images.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/out_edge_emir.jpg" alt="edge_emir" style="width: 300px;">
+            <figcaption>Emir with application of edge detection</figcaption>
+            <figcaption>Displacement: green:(24, 49), red:(281, 278)</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/out_emir.jpg" alt="Emir" style="width: 300px;">
+            <figcaption>Emir with original NCC</figcaption>
+            <figcaption>Displacement: green:(24, 49), red:(-200, 0)</figcaption>
+        </figure>
+    </div>
+    <h3>White Balance Adjustment</h3>
+    <p>To implement white balance adjustments, I chose both the minimum and maximum values of the different color channels and scaled them to form a uniform level and achieve balance in the overall image.</p>
+    <p>First I obtain the maximum and minimum values for each channel and determine the maximum of the current minimum value and the minimum of the maximum value for all channels as the target range. Then calculate the scaling and offset factors to linearly scale the values of each channel to the target range.</p>
+    <p>By applying this white balance adjustment, It's able to produce a final output with more visually appealing and balanced colors.</p>
+    <div class="special" style="width: 80%; justify-content: center">
+        <figure>
+            <img src="img/out_church.jpg" alt="Church">
+            <figcaption>Original Church</figcaption>
+        </figure>
+        <figure>
+            <img src="img/wba_church.jpg" alt="Church appling WBA">
+            <figcaption>Church after Appling White Balance Adjustment</figcaption>
+        </figure>
+        <figure>
+            <img src="img/out_lady.jpg" alt="Lady">
+            <figcaption>Original  Lady</figcaption>
+        </figure>
+        <figure>
+            <img src="img/wba_lady.jpg" alt="Lady appling WBA">
+            <figcaption>Lady after Appling White Balance Adjustment</figcaption>
+        </figure>
+    </div>
+</body>
+</html>
