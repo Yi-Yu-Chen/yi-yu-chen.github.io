@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Project Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        .gallery-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(2, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-3 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-5 {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(5, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-4 img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-5 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Fall 2024 CS 180 Project2</h2>
+    <h1>Fun with Filters and Frequencies!</h1>
+    <p style="color: gray;">By Yiyu Chen</p>
+    <p>In this project, I  applied various image processing techniques, starting with the exploration of 2D convolutions through finite difference operators to enhance edge detection in images. I then used Gaussian filters to smooth images before subtracting these from the original to sharpen image details. Further, I experimented with creating hybrid images that appear differently at varying distances and concluded with multi-resolution blending to integrate different images seamlessly. This report presents the methods I employed, the results obtained, and the insights I gained from these experiments.</p>
+    <h2>Part 1: Fun with Filters</h2>
+    In this part, I employed the \(D_x\) and\(D_x\) finite difference operators, implemented as convolution kernels, to detect edges in images by highlighting changes in pixel intensity along the horizontal and vertical axes, respectively. These operators are designed to approximate the first derivatives in each direction, crucial for detecting the boundaries where pixel intensities change significantly.
+    <ul>
+        <li>\(D_x\) <b>kernel</b>: This kernel, typically represented as \([−1,1]\), is applied horizontally across the image. It computes the difference in intensity between adjacent pixels along the x-direction. When convolved with the image, this kernel emphasizes edges that are predominantly vertical by highlighting horizontal gradients.</li>
+        <li>\(D_y\) <b>kernel</b>: Similarly, this kernel, usually displayed as \(
+            \begin{bmatrix} 1 \\ -1 \end{bmatrix} \)
+            , is applied vertically. It measures the intensity difference between adjacent pixels along the y-direction, thus accentuating edges that are primarily horizontal by capturing vertical gradients.</li>
+    </ul>
+    <p><b>Why this method is effective for edge detection:</b>
+    This method is effective for edge detection because it directly targets changes in brightness, which define edges within an image. The separate use of horizontal and vertical kernels allows for the detection of edges in both orientations, making the approach robust and versatile for various types of images. By enhancing areas where there is a significant shift in adjacent pixel values, this technique efficiently delineates the boundaries and shapes within the images, crucial for tasks such as object recognition and scene understanding.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/1-cameraman-0.png" alt="cameraman" style="width: 300px;">
+            <figcaption>The original image</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/1-cameraman-1.jpg" alt="cameraman after gradient" style="width: 300px;">
+            <figcaption>The image after applying gradient</figcaption>
+        </figure>
+    </div>
+    <p>However, we can find that the result was quite noisy. It looks like a collection of white dots, rather than the edges we want. To solve this problem I applied a Gaussian filter.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/1-camaraman-20.jpg" alt="cameraman_blur" style="width: 300px;">
+            <figcaption>The image after Gaussian blur</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/1-cameraman-2.jpg" alt="cameraman_blur_gradient" style="width: 300px;">
+            <figcaption>The image applied both Gaussian and gradient</figcaption>
+        </figure>
+    </div>
+    <p>When using the Derivative of Gaussian (DoG) filter compared to the simple finite difference operator, the most significant difference observed is the reduction of dots. The Gaussian filter serves as a smoothing operator that mitigates the high-frequency noise components before the derivative operation is applied. This results in edges that are smoother and less fragmented than those produced by the mere application of the finite difference operators. The DoG approach effectively captures important edge details while suppressing unnecessary noise, making it superior for applications where clean edge detection is crucial.</p>
+    <p>After this, instead of doing three consecutive convolutions, I applied a single convolution operation with a kernel that is the convolution of the three kernels. Since images are generally larger than kernels, convolution operations on images take more time. This change can improve efficiency. Mathematically, the associative property of convolution ensures that the order of operations does not affect the final result, meaning that convolving the image first with a Gaussian and then with a derivative filter is equivalent to convolving it directly with the combined DoG filter. This method simplifies the process while maintaining accuracy in edge detection. I verified this by visually comparing the results, confirming that the DoG approach produced outcomes consistent with those obtained through the sequential application of Gaussian and derivative filters.</p>
+    <p><b>Exploring the Effects of \(D_x\) and\(D_x\) Kernels:</b></p>
+    <ul>
+        <li>\(D_x\) <b>kernel:</b>The kernel emphasizes changes in intensity along the horizontal axis, making it effective for detecting vertical edges where there is a significant horizontal gradient in pixel values. When applied to an image, this kernel highlights vertical structures, as it responds strongly to vertical lines that differ sharply in brightness from their surroundings.</li>
+        <li>\(D_y\) <b>kernel</b>:Conversely, this kernel detects changes along the vertical axis, highlighting horizontal edges. This kernel is sensitive to horizontal discontinuities in brightness, making it ideal for underlining horizontal structures in the image.</li>
+    </ul>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/1-cameraman-2x.jpg" alt="cameraman_Dx" style="width: 300px;">
+            <figcaption>The image only applied \(D_x\) </figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/1-cameraman-2y.jpg" alt="cameraman_Dy" style="width: 300px;">
+            <figcaption>The image only applied \(D_y\)</figcaption>
+        </figure>
+    </div>
+    <p>The core functionality of these kernels can be likened to recognizing patterns in the image that match their structure. \(D_x\) and\(D_x\) act as templates that respond to specific orientations of edges: vertical and horizontal, respectively. By convolving these kernels with the image, areas that closely resemble the kernel's pattern produce higher values, effectively identifying edges that match the orientation of the kernel.</p>
+    <h4><b>More Examples:</b></h4>
+    <div class="special">
+        <figure style="width: 350px;">
+            <img src="img/elevator.jpg" alt="elevator">
+            <figcaption>Original Image</figcaption>
+            </figure>
+
+        <figure style="width: 350px;">
+            <img src="img/1-elevator-1.jpg" alt="elevator_gradient">
+            <figcaption>The image only applied gradient</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/1-elevator-21.jpg" alt="elevator_Dx_Dy">
+            <figcaption>The image applied both \(D_x\) and \(D_y\)</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/1-elevator-2x.jpg" alt="elevator_Dx">
+            <figcaption>The image only applied \(D_x\)</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/1-elevator-2y.jpg" alt="elevator_Dy">
+            <figcaption>The image only applied \(D_y\)</figcaption>
+        </figure>
+    </div>
+    <h2>Part 2: Fun with Frequencies</h2>
+    <h3>Part 2.1: Image "Sharpening"</h3>
+    <p>In this section, I implemented the unsharp masking technique to enhance image sharpness. This process involves subtracting a Gaussian blurred version of the image from the original to emphasize high-frequency details, effectively making the image appear sharper. The result is a visually sharper image that highlights textures and edges</p>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/taj.jpg" alt="taj">
+            <figcaption>The original taj.jpg</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/2-1-s1.jpg" alt="taj with Gaussian Kernel">
+            <figcaption>Sharpen with Gaussian Kernel (Sigma = 1)</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/2-1-s2.jpg" alt="taj with Gaussian Kernel">
+            <figcaption>Sharpen with Gaussian Kernel (Sigma = 2)</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-4">
+        <figure>
+            <img src="img/sculpture.jpg" alt="sculpture">
+            <figcaption>The Original</figcaption>
+        </figure>
+        <figure>
+            <img src="img/sculpture-sharp.jpg" alt="sculpture-sharp">
+            <figcaption>The Sharpen</figcaption>
+        </figure>
+        <figure>
+            <img src="img/sanqing.jpg" alt="sanqingshan">
+            <figcaption>The Original</figcaption>
+        </figure>
+        <figure>
+            <img src="img/sanqing-sharp.jpg" alt="sanqingshan-sharp">
+            <figcaption>The Sharpen</figcaption>
+        </figure>
+    </div>
+    <p>For the evaluation, I selected a sharply detailed image of the ceiling of the Paris Opera House, applied a Gaussian blur to simulate a loss of sharpness, and then used the unsharp masking technique to attempt to restore its clarity. </p>
+    <p><b>Original vs. Sharpened Image:</b> The sharpened image shows enhanced edge definition and texture clarity compared to the blurred version. However, it does not fully regain its original sharpness which was particularly evident in the delicate and finely detailed areas of the image. Also, the sharpening process introduced some artifacts and amplified noise.</p>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/ceiling.jpg" alt="ceiling">
+            <figcaption>Original Image</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/ceiling-blur.jpg" alt="ceiling-blur">
+            <figcaption>Blurred Image</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/ceiling-sharp.jpg" alt="ceiling-blur-sharp">
+            <figcaption>Sharpen Blurred Image</figcaption>
+        </figure>
+    </div>
+    <h3>Part 2.2: Hybrid Images</h3>
+    <p>In this section of the project, I explore the fascinating concept of hybrid images that change in perception based on viewing distance. Hybrid images combine the high-frequency details of one image with the low-frequency components of another, resulting in a composite that offers dual interpretations. Due to the uneven distribution of human photoreceptor cells in the retina, when viewing closely, the viewer perceives a high-frequency component, but from a distance, the low-frequency component dominates the visual experience. The creation process involves careful frequency separation and blending. It uses a low-pass filter to smooth one image, a high-pass filter to accentuate the details in another, and then combine them.</p>
+    <h4>Mona Lisa & Girl with a Pearl Earring</h4>
+    <div class="gallery-4">
+        <figure>
+            <img src="img/Girl with a Pearl Earring.jpg" alt="Girl with a Pearl Earring">
+        </figure>
+        <figure>
+            <img src="img/Mona_Lisa.jpg" alt="Mona Lisa">
+        </figure>
+        <figure>
+            <img src="img/gray_Mona_Girl.jpg">
+        </figure>
+        <figure style="width: 70px;">
+            <img src="img/gray_Mona_Girl.jpg">
+        </figure>
+    </div>
+    <p style="text-align: center; color: gray;">The leftmost image is zoomed out to simulate viewing from a distance.</p>
+    <p>I created a hybrid image using two iconic artworks: "Mona Lisa," which was subjected to a low-pass filter to retain its low-frequency components, and "Girl with a Pearl Earring," from which high-frequency details were extracted. FFT (Fast Fourier Transform) images provide a visual representation of the frequency content of images in the spatial domain converted to the frequency domain. Here are the insights gained from FFT analysis at various stages of image processing.</p>
+    <img src="img/FFT.png" alt="FFT of Images" style="width: 700px;">
+    <ul>
+        <li><b>FFT of Input Image 1 & 2:</b> Since both paintings are images of oil paintings, the FFTs look very similar. They display a typical distribution of frequencies with a bright center with frequencies spreading radially outward. It indicates a strong presence of low frequencies typical in smoother areas and a mix of higher frequencies corresponding to the finer details and textures of the image.</li>
+        <li><b>FFT of Filtered Image 1 (The Girl with a Pearl Earring - High Pass Filtered):</b> The third FFT shows a significant presence of high frequencies compared to the one above it, indicative of the removal of low-frequency components.</li>
+        <li><b>FFT of Filtered Image 2 (Mona Lisa - Low Pass Filtered):</b> Contrary to the third image, this FFT displays a pronounced central brightness with diminished radial spread. It indicates that the low-pass filter has effectively retained the low-frequency content, smoothing out the higher frequencies.</li>
+        <li><b>FFT of Hybrid Image:</b> The final FFT image represents the direct combination of the low and high-frequency components from the filtered images.</li>
+    </ul>
+
+    <h4>Color Image</h4>
+    <div class = "special">
+        <figure style="width: 300px;">
+            <img src="img/color_Mona_Girl.jpg">
+        </figure>
+        <figure style="width: 70px;">
+            <img src="img/color_Mona_Girl.jpg">
+        </figure>
+    </div>
+    <p>I tried to convert processing gray images to combing color ones and found that the key challenge lies in managing the image's frequency components effectively due to the richer information conveyed by color. Specifically, the Gaussian blur's sigma parameter needs careful adjustment. A higher sigma value is often required to reduce high-frequency details that can become overly pronounced and disrupt the visual coherence in the colorized image. This adjustment ensures that the addition of color enhances rather than obscures the image's underlying structures, maintaining clarity while providing a smooth transition between color tones. Also, the images that retain high-frequency details often have less color information but more edges. Since they are gotten by subtraction, it also requires a higher sigma value to get more information.</p>
+    <p>At the same time, the image selection is also crucial. My initial idea was to keep the low-frequency part of Girl with a Pearl Earring and filter out the high-frequency part of Mona Lisa. Because I think the blue part of Girl with a Pearl Earring is very distinctive. However, after trying, I found that this blue greatly affects the visual effect of the high-frequency part. In addition, the high contrast in brightness between the characters and the background in the picture also has a great impact. Even if I convert Girl with a Pearl Earring into a gray picture, the effect of the mixed picture is still not as good as when the Mona Lisa is used as the low-frequency part. On the other hand, the high-frequency information of Mona Lisa is relatively bland and less prominent, which is also an important factor.</p>
+    <p>The two images below are the best results I got after trying many different cutoff-frequency combinations, but still not very good results in the high-frequency part (Mona Lisa).</p>
+    <div class = "gallery-4">
+        <figure style="width: 300px;">
+            <img src="img/color_Girl_Mona.jpg">
+        </figure>
+        <figure style="width: 70px;">
+            <img src="img/color_Girl_Mona.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/gray_Girl_Mona.jpg">
+        </figure>
+        <figure style="width: 70px;">
+            <img src="img/gray_Girl_Mona.jpg">
+        </figure>
+    </div>
+    <p style="text-align: center; color: gray;">Failure examples: Color-Color & Gray-Color version</p>
+    <h4>More Example</h4>
+    <div class = "special">
+        <figure style="width: 350px;">
+            <img src="img/town.jpg">
+        </figure>
+        <figure style="width: 350px;">
+            <img src="img/mountain.jpg">
+        </figure>
+    </div>
+    <p style="text-align: center;  color: gray;">Original Images</p>
+    <div class="gallery-4">
+        <figure>
+            <img src="img/gray_Mountain_Town.jpg" style="width: 350px;">
+        </figure>
+        <figure>
+            <img src="img/gray_Mountain_Town.jpg" style="width: 70px;">
+        </figure>
+        <figure>
+            <img src="img/color_Mountain_Town.jpg" style="width: 350px;">
+        </figure>
+        <figure>
+            <img src="img/color_Mountain_Town.jpg" style="width: 70px;">
+        </figure>
+    </div>
+    <p style="text-align: center;  color: gray;">Hybrid Images</p>
+    <h3>Part 2.3: Gaussian and Laplacian Stacks</h3>
+    <p style="color: gray;">A fixed constant is added to all the Laplacian levels to aid visualization.</p>
+    <img src="img/Oraple.png" alt="Gaussian and Laplacian Stacks" style="width: 700px;">
+    <h3>Part 2.4: Multiresolution Blending (a.k.a. the oraple!)</h3>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/apple.jpeg">
+            <figcaption>apple</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/orange.jpeg">
+            <figcaption>orange</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/OrAple.jpg">
+            <figcaption>Oraple</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/opera_boy.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/opera_girl.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/combined_opera.jpg">
+        </figure>
+    </div>
+    <div class="gallery-4">
+        <figure style="width: 300px;">
+            <img src="img/circle1.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/circle2.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/blend_circle.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/mask_circle.jpg">
+        </figure>
+    </div>
+    <div class="gallery-4">
+        <figure style="width: 300px;">
+            <img src="img/star.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/field.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/bc_star_field.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/mask_star.jpg">
+        </figure>
+    </div>
+    <div class="gallery-4">
+        <figure style="width: 300px;">
+            <img src="img/prof1.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/cat.jpg">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/mask3.png">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/blend_cat.jpg">
+        </figure>
+    </div>
+
+</body>
+</html>
+
