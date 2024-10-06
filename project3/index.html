@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        .dropdown {
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+        }
+        .dropdown-header {
+            cursor: pointer;
+            font-weight: bold;
+            margin-bottom: 5px;
+            padding: 10px;
+            background-color: #f9f9f9;
+        }
+        .dropdown-header:hover {
+            background-color: #e0e0e0;
+        }
+        .dropdown-content {
+            display: none;
+            margin-top: 10px;
+        }
+        .gallery-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(2, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-3 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-5 {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(5, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-4 img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-5 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .reset-button {
+            margin-top: 10px;
+            padding: 5px 10px;
+            font-size: 1em;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            width: 40 px;
+        }
+        .reset-button:hover {
+            background-color: #e0e0e0;
+        }
+    </style>
+    <script>
+        function toggleDropdown(id) {
+            const content = document.getElementById(id);
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function resetGif(id) {
+            const gif = document.getElementById(id);
+            const scrollPosition = window.scrollY; 
+            const src = gif.src;
+
+            gif.src = '';
+            setTimeout(() => {
+                gif.src = src; 
+                window.scrollTo(0, scrollPosition); 
+            }, 10); 
+        }
+    </script>
+</head>
+<body>
+    <h1>Project 3: Face Morphing</h1>
+    <p style="color: gray;">By Yiyu Chen</p>
+
+    <!-- Part 1 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part1-content')">&#9656; Part 1: Defining Correspondences</div>
+        <div id="part1-content" class="dropdown-content", style="text-align: center;">
+            <img src="img/Correspondences.png" alt="Correspondences" width="700">
+        </div>
+    </div>
+
+    <!-- Part 2 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part2-content')">&#9662; Part 2: Computing the "Mid-way Face"</div>
+        <div id="part2-content" class="dropdown-content">
+            <p>This is what each picture looks like when shaped into the Mid-way Face. </p>
+            <div class="gallery-3">
+                <figure>
+                    <img src="img/a2m.jpg" alt="Image a to Mid-way">
+                    <figcaption>Image a (No smile) to Mid-way</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/b2m.jpg" alt="Image b to Mid-way">
+                    <figcaption>Image b (Smile) to Mid-way</figcaption> 
+                </figure>
+                <figure>
+                    <img src="img/Mid-way_Face.jpg" alt="Mid-way Face">
+                    <figcaption>Combined result: Mid-way Face</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+
+    <!-- Part 3 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part3-content')">&#9656; Part 3: The Morph Sequence</div>
+        <div id="part3-content" class="dropdown-content">
+            <p>To make the morph more natural, I used different functions for shape distortion and cross dissolution. For the shapes I used a linear function, but for the cross dissolve I used a quadratic easy in out function with an “S” shape. Here are what the functions like:</p>
+            <img src="img/curve.png" alt="Function curve" width="200">
+            <p>result:</p>
+            <div id="gif1-container" style="text-align: center;">
+                <img id="gif1" src="img/morphing_loop.gif" alt="Animated GIF" width="300">
+                <button class="reset-button" onclick="resetGif('gif1')">Reset GIF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Part 4 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part4-content')">&#9662; Part 4: The "Mean Face" of a Population</div>
+        <div id="part4-content" class="dropdown-content" style="text-align: center;">
+            <p>Here is the "Mean Face" of the population:</p>
+            <div class = 'gallery-3'>
+                <figure>
+                    <img src="img/meanFace.jpg" alt="Mean Face">
+                    <figcaption>Mean Face</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/meanFace_smail.jpg" alt="Mean Face 2">
+                    <figcaption>Mean Face with Smile</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/mean_group.png" alt="Mean Face 3">
+                </figure>
+            </div>
+            <p>Here are some faces morphed into the mean face:</p>
+            <div class = 'gallery-4'>
+                <figure>
+                    <img src="img/morph/13a.jpg" alt="13a_ori">
+                    <figcaption>Original face 13</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_13a.jpg" alt="13a_morph">
+                    <figcaption>Morph to Mean: face 13</figcaption>
+                </figure>
+
+                <figure>
+                    <img src="img/morph/53a.jpg" alt="53a_ori">
+                    <figcaption>Original face 53</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_53a.jpg" alt="53a_morph">
+                    <figcaption>Morph to Mean: face 53</figcaption>
+                </figure>
+
+                <figure>
+                    <img src="img/morph/103a.jpg" alt="103a_ori">
+                    <figcaption>Original face 103</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_103a.jpg" alt="103a_morph">
+                    <figcaption>Morph to Mean: face 103</figcaption>
+                </figure>
+
+                <figure>
+                    <img src="img/morph/106a.jpg" alt="106a_ori">
+                    <figcaption>Original face 106</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_106a.jpg" alt="106a_morph">
+                    <figcaption>Morph to Mean: face 106</figcaption>
+                </figure>
+
+                <figure>
+                    <img src="img/morph/153a.jpg" alt="153a_ori">
+                    <figcaption>Original face 153</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_153a.jpg" alt="153a_morph">
+                    <figcaption>Morph to Mean: face 153</figcaption>
+                </figure>
+
+                <figure>
+                    <img src="img/morph/183a.jpg" alt="183a_ori">
+                    <figcaption>Original face 183</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/morph/morph_183a.jpg" alt="183a_morph">
+                    <figcaption>Morph to Mean: face 183</figcaption>
+                </figure>
+            </div>
+            <div class = 'special'>
+                <figure>
+                    <img src="img/ori-point.png" alt="ori face">
+                    <figcaption>Original face</figcaption>
+                </figure>
+                <figure>
+                    <img src="img/shape_change.png" alt="shaped face">
+                    <figcaption>my face warped into the average and the average face warped into mine</figcaption>
+                </figure>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Part 5 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part5-content')">&#9656; Part 5. Caricatures: Extrapolating from the mean</div>
+        <div id="part5-content" class="dropdown-content">
+            <p>Here's a caricature of my face, this is what I get when I set warp_frac to -0.8</p>
+            <img src="img/caricature_face.jpg" alt="Caricature" width="300">
+        </div>
+    </div>
+
+    <!-- Part 6 -->
+    <div class="dropdown">
+        <div class="dropdown-header" onclick="toggleDropdown('part6-content')">&#9662; Part 6. Bells and Whistles</div>
+        <div id="part6-content" class="dropdown-content">
+        
+            <div class="dropdown">
+                <div class="dropdown-header" onclick="toggleDropdown('part6-1-content')">&#9656; Age Progression</div>
+                <div id="part6-1-content" class="dropdown-content">
+                    <p>I picked a photo of myself from different ages and make a movie that shows how it changed over time. </p>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <iframe width="320" height="400" src="https://youtube.com/shorts/2CdBOvbtsP4" 
+                        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="dropdown">
+                <div class="dropdown-header" onclick="toggleDropdown('part6-2-content')">&#9656; Gender Changes</div>
+                <div id="part6-2-content" class="dropdown-content">
+                    <p>I'm using the mean face I created earlier here.  I convert the mean female face to male and the mean male face to female. </p>
+                    <div style="text-align: center; margin-top: 20px;">
+                        <img src="img/changegander.png" alt="Change gender" width="600">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
