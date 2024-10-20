@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Project Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+        .gallery-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(2, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .special img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-3 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-5 {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(5, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-4 img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-5 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        figure {
+            margin: 0;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Fall 2024 CS 180 Project4</h2>
+    <h1>Stitching Photo Mosaics</h1>
+    <p style="color: gray;">By Yiyu Chen</p>
+    <h2>Part A: IMAGE WARPING and MOSAICING</h2>
+    <h3>Recover homographies</h3>
+    <p>First, we have point correspondences of two relate images. And then try to apply homography on one to project them into same plane.</p>
+    <div>
+        <img src="img/dot-corrspond.png" alt="point correspondences" style="width: 800px; text-align: center;">
+    </div>
+    <p>Homography is a 3x3 transformation matrix used in image processing to map points from one plane to another, typically from one image to another. This transformation can include translation, rotation, scale, and perspective distortion. A homography matrix \(H\) can be represented as follows:</p>
+    <p>\[H = \begin{bmatrix}
+        a & b & c \\
+        d & e & f \\
+        g & h & 1
+        \end{bmatrix}\]</p>
+    <p>To compute the homography matrix using point correspondences, we start with pairs of matched points \( (x, y) \) from one image and \( (x', y') \) from another image. The relationship between these points through the homography matrix \( H \) is given by:</p>
+    <p>\[
+    \begin{bmatrix}
+    wx' \\
+    wy' \\
+    w
+    \end{bmatrix} = 
+    \begin{bmatrix}
+    a & b & c \\
+    d & e & f \\
+    g & h & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+    x \\
+    y \\
+    1
+    \end{bmatrix} 
+    \]
+    
+    <p>Expanding and rearranging, we get two equations for each point pair:</p>
+
+    <p>
+    \[\left\{
+    \begin{align*}
+    ax + by + c &= wx' \\
+    dx + ey + f &= wy' \\
+    gx + hy + 1 &= w
+    \end{align*} \right.
+    \]
+
+    <p>\[
+    \Rightarrow \left\{
+    \begin{align*}
+    &ax + by + c - gx' - hy' = x' \\
+    &dx + ey + f - gx'y - hy'y = y'
+    \end{align*} \right.
+    \]
+    </p>
+    <p>Stacking these equations to matrix form:</p>
+
+    <p>\[
+        \begin{bmatrix}\
+        x' \\ y'
+        \end{bmatrix} =
+        \begin{bmatrix}
+        x & y & 1 & 0 & 0 & 0 & -x'x & -x'y  \\
+        0 & 0 & 0 & x & y & 1 & -y'x & -y'y 
+        \end{bmatrix}
+        \begin{bmatrix}
+        a \\ b\\ c\\ d\\ e\\ f\\ g\\ h
+        \end{bmatrix} 
+    \]
+    
+    <p>Although the matrix can be computed with as few as four points at a minimum, to minimize the error, we provide more pairs of points to the function. The system becomes overdetermined, meaning there are more equations than unknowns. This is typically solved using the least squares method, which minimizes the sum of the squares of the residuals (the differences between the observed values and those predicted by the model). Mathematically, the least squares solution is given by:</p>
+    <p>\[ \hat{h} = (A^ \top A)^ {-1} A ^ \top b\] </p>
+    <p>After obtaining the solution, add 1 to the back and reshape to 3x3. Then we get homography.</p>
+    
+    <h3>Image Rectification</h3>
+    <P> Make rectangular objects looks rectangular using a homography matrix. </p>
+
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/window.jpg" alt="window image" style="width: 300px;">
+            <figcaption>A image of window before warp</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/warp_window.jpg" alt="warpped window" style="width: 300px;">
+            <figcaption>A image of window after warp</figcaption>
+        </figure>
+    </div>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/badge.jpg" alt="badge image" style="width: 300px;">
+            <figcaption>A image of badge before warp</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/warp_badge.jpg" alt="warpped badge" style="width: 300px;">
+            <figcaption>A image of badge after warp</figcaption>
+        </figure>
+    </div>
+    <h3>Blend the Images into a Mosaic</h3>
+    <p>Here, we take two images and their correspondences as input. We compute the homography matrix and then expend the canvas according to the four corner points of the warped image and base image. </p>
+
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/street_l.jpg" alt="street left" style="width: 300px;">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/street_r.jpg" alt="street right" style="width: 300px;">
+        </figure>
+        <img src="img/easy_warp_street.jpg" alt="average img" style="width: 450px;">
+    </div>
+    <p>If we simply average the two images where they overlap, we would see the edge artifacts. To make the blend smoother, I used a Laplacian pyramid.</p>
+    <div style="text-align: center;">
+        <img src="img/warp_street.jpg" alt="laplacian pyramid blend image" style="width: 700px;">
+    </div>
+    <p>Terrace Entrance</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/home_u.jpg" alt="down part" style="width: 350px;">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/home_d.jpg" alt="up part" style="width: 350px;">
+        </figure>      
+    </div>
+    <div style="text-align: center;">
+        <img src="img/warp_tree.jpg" alt="blend image" style="width: 500px;">
+    </div>
+    <p>Sunset</p>
+    <div class="gallery-3">
+        <figure style="width: 300px;">
+            <img src="img/sunset-l1.jpg" alt="left sunset" style="width: 370px;">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/sunset-main.jpg" alt="middle sunset" style="width: 370px;">
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/sunset-r2.jpg" alt="right sunset" style="width: 370px;">
+        </figure>
+    </div>
+    <div style="text-align: center;">
+        <img src="img/warp_sunset_whole.jpg" alt="blend image" style="width: 800px;">
+</body>
+</html>
+
