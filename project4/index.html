@@ -24,7 +24,8 @@
             margin: 0 auto; 
             grid-template-columns: repeat(2, 1fr); 
             margin-top: 20px;
-            justify-items: center
+            justify-items: center;
+            text-align: center
         }
         .special img {
             width: 90%;
@@ -183,9 +184,14 @@
         </figure>
         <img src="img/easy_warp_street.jpg" alt="average img" style="width: 450px;">
     </div>
-    <p>If we simply average the two images where they overlap, we would see the edge artifacts. To make the blend smoother, I used a Laplacian pyramid.</p>
-    <div style="text-align: center;">
-        <img src="img/warp_street.jpg" alt="laplacian pyramid blend image" style="width: 700px;">
+    <p>If we simply average the two images where they overlap, we would see the edge artifacts. To make the blend smoother, I used bwdist to compute a distance map and applied a Laplacian pyramid using mask from the distance map.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/distance.png" alt="distance map" >
+        </figure>
+        <figure style="width: 700px;">
+            <img src="img/warp_street.jpg" alt="laplacian pyramid blend image" style="width: 700px;">
+        </figure>      
     </div>
     <p>Terrace Entrance</p>
     <div class="special">
@@ -213,6 +219,171 @@
     </div>
     <div style="text-align: center;">
         <img src="img/warp_sunset_whole.jpg" alt="blend image" style="width: 800px;">
+    </div>
+    <h2>Part B: IMAGE WARPING and MOSAICING</h2>
+    <h3>Detecting corner</h3>
+    <p>Use Harris corner detector to detect corners in the image. The Harris corner detector is a method used to extract corners from an image. It is based on the idea that corners can be detected by looking for significant changes in intensity in all directions. However, Harris corner points are very dense and don't lend themselves to subsequent processing.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/stair_l.jpg" alt="stair image" style="width: 300px;">
+            <figcaption>A image of stair</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/corner.png" alt="harris" style="width: 350px;">
+            <figcaption>Harris corners on image</figcaption>
+        </figure>
+    </div>
+    <h3>Adaptive Non-maximal Suppression (ANMS)</h3>
+    <p>To remove redundant information from the corner points, I apply ANMS to reduce the number of interest points. It works by selecting the most significant corners and discarding the rest. The algorithm works by sorting the corners by their Harris response and then iterating through the list to find the minimum distance to a corner with a higher response. If the distance is greater than a threshold, the corner is kept; otherwise, it is discarded. This process is repeated until the desired number of corners is reached.This algorithm results in a more even distribution of points comparing to direct select the maximize point by order.</p>
+    <div class="special">
+        <figure style="width: 300px;">
+            <img src="img/corner.png" alt="harris" style="width: 350px;">
+            <figcaption>Harris corners</figcaption>
+        </figure>
+        <figure style="width: 300px;">
+            <img src="img/anms_100_30.png" alt="anms_100" style="width: 350px;">
+            <figcaption>ANMS 100 corners w/ r = 30</figcaption>
+        </figure>
+    </div>
+    <div class="special" >
+        <figure style="width: 450px;">
+            <img src="img/amns_500_15.png" alt="anms_100" style="width: 450px;">
+            <figcaption>ANMS 500 corners w/ r = 15</figcaption>
+        </figure>
+        <figure style="width: 450px;">
+            <img src="img/max_500.png" alt="anms_100" style="width: 450px;">
+            <figcaption>MAX 500 corners</figcaption>
+        </figure>
+    </div>
+    <h3>Feature Descriptors</h3>
+    <p>I first extracted the 40x40 subsample from the corners returned by ANMS and then reduced the sampling rate to get an 8x8 feature subsample. Here I show visualizations of features of a few random corner points:</p>
+    <div class="gallery-3">
+        <figure style="width: 500px;">
+            <img src="img/features.png" alt="features" style="width: 500px;">
+            <figcaption>position of features</figcaption>
+        </figure>
+        <figure style="width: 400px;">
+            <img src="img/f0sub40.png" alt="subsample0" style="width: 400px;">
+            <figcaption>40x40 subsample on corner 0</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f0.png" alt="feature0" style="width: 200px;">
+            <figcaption>8x8 feature on corner 0</figcaption>
+        </figure>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 200px;">
+            <img src="img/f80.png" alt="feature1" style="width: 200px;">
+            <figcaption>feature at corner 80</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f160.png" alt="feature2" style="width: 200px;">
+            <figcaption>feature at corner 160</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f240.png" alt="feature3" style="width: 200px;">
+            <figcaption>feature at corner 200</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f320.png" alt="feature4" style="width: 200px;">
+            <figcaption>feature at corner 320</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f400.png" alt="feature5" style="width: 200px;">
+            <figcaption>feature at corner 400</figcaption>
+        </figure>
+        <figure style="width: 200px;">
+            <img src="img/f480.png" alt="feature6" style="width: 200px;">
+            <figcaption>feature at corner 480</figcaption>
+        </figure>
+    </div>
+    <h3>Feature Matching</h3>
+    <p>Use the Euclidean distance between the feature vectors to find the best match. The best match is the one with the smallest Euclidean distance. For each corner, I flatten its features and then compute the best match (first nearest neighbor) and the second best match (second nearest neighbor) in the other group. I then apply Lowe's technique: calculate the 1-NN and 2-NN errors and the e1-NN/e2-NN ratio, then apply a threshold, and if the ratio is less than the threshold, we use that best matching pair.</p>
+    <div style="text-align: center;">
+        <img src="img/match.png" alt="match" style="width: 800px;">
+    </div>
+    <p>Here is the matches pairs after Lowe's technique. We can see most of the points corresponded visually correctly, with only a few corners showing an obviously incorrect match.</p>
+    <h3>Random Sample Consensus(RANSAC) </h3> 
+    <p>RANSAC (Random Sample Consensus) is a very powerful iterative method for identifying outliers in data and estimating the parameters of a mathematical model from the remaining interior points. Its basic steps include:</p>
+    <ol>
+        <li>Random selection: a minimum number of points are randomly selected from the dataset which are sufficient to estimate the model parameters. For homography, we need 4 sets of point pairs.</li>
+        <li>Model fitting: estimate the model(matrix) parameters using the selected points.</li>
+        <li>Inliers calculation: Apply this model to all the data and calculate how many points fit the model. The points that fit well are called  inliers. I set the threshold to 1, i.e. if the distance between the predicted point and the corresponding one is less than 1, we keep it.</li>
+        <li>Iteration: repeat the above steps several times, each time possibly selecting a different set of random points.</li>
+        <li>Optimal model selection: the model that yields the most inliers during the iteration process is chosen as the final result.</li>
+    </ol>
+    <div style="text-align: center;">
+        <img src="img/RANSA.png" alt="RANSAC" style="width: 800px;">
+    </div>
+    <p>Here is the result of RANSAC. We can see the inliers are correctly matched and the outliers are removed.</p>
+    <h3>Proceed Mosaics</h3>
+    <p>Take all these inliers, recompute the homography matrix. After that, we can warp the image and blend them together. Here is the result of the mosaics.</p>
+    <div class = "gallery-3">
+        <figure style="width: 280px;">
+            <img src="img/stair_l.jpg" alt="stair_l" style="width: 280px;">
+            <figcaption>Left image</figcaption>
+        </figure>
+        <figure style="width: 280px;">
+            <img src="img/stair_r.jpg" alt="stair_r" style="width: 280px;">
+            <figcaption>Right image</figcaption>
+        </figure>
+        <img src="img/warp_stair_auto.jpg" alt="auto blend stair" style="width: 500px;">
+    </div>
+    <p>Street</p>
+    <div class = "gallery-3">
+        <figure style="width: 420px;">
+            <img src="img/street_amns.png" alt="corners after AMNS" style="width: 420px;">
+            <figcaption>Corners after AMNS</figcaption>
+        </figure>
+        <figure style="width: 390px;">
+            <img src="img/street_match.png" alt="street_match" style="width: 390px;">
+            <figcaption>matched corners</figcaption>
+        </figure>
+        <figure style="width: 390px;">
+            <img src="img/street_RANSA.png" alt="street_RANSA" style="width: 390px;">
+            <figcaption>RANSA result</figcaption>
+        </figure>
+    </div>
+    <div class="special">
+        <figure style="width: 500px;">
+            <img src="img/warp_street_auto.jpg" alt="auto blend street" style="width: 550px;">
+            <figcaption>Auto blend street</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/warp_street.jpg" alt="manual blend street" style="width: 550px;">
+            <figcaption>Manual blend street</figcaption>
+        </figure>
+    </div>
+    <p>Sunset</p>
+    <div class = "gallery-3">
+        <figure style="width: 420px;">
+            <img src="img/sunset_amns.png" alt="corners after AMNS" style="width: 420px;">
+            <figcaption>Corners after AMNS</figcaption>
+        </figure>
+        <figure style="width: 390px;">
+            <img src="img/sunset_match.png" alt="sunset_match" style="width: 390px;">
+            <figcaption>matched corners</figcaption>
+        </figure>
+        <figure style="width: 390px;">
+            <img src="img/sunset_RANSA.png" alt="sunset_RANSA" style="width: 390px;">
+            <figcaption>RANSA result</figcaption>
+        </figure>
+    </div>
+    <div class="special">
+        <figure style="width: 500px;">
+            <img src="img/warp_sunset_auto.jpg" alt="auto blend sunset" style="width: 550px;">
+            <figcaption>Auto blend sunset</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/warp_sunset.jpg" alt="manual blend sunset" style="width: 550px;">
+            <figcaption>Manual blend sunset</figcaption>
+        </figure>
+    </div>
+    <p>For the street pictures, the manual and automatic correspondences yielded very similar results. For sunsets, there are some minor differences, but they all work well. I suspect the reason for this is that when manually selecting correspondences, I tend to choose the point in the center of the image, but since there are few corner points detected in the sky in the upper part of the image, the automatic correspondences tend to concentrate on the lower part of the image, where the grass is, since the corners are more prominent here.</p>
+    <p>At the same time, I have observed that for images with distinct corner features, such as steps and buildings on the street, most automatically detected corners are located in the central area of the image. This corresponds to the distortion characteristics of the camera. That is to say, the middle part of the image tends to retain its original structure, while the edges of the image are somewhat distorted. The edges are difficult to maintain correspondence between the two images due the distortion is nonlinear, but the center retains better correspondence.</p>
+    <h3>Reflection</h3>
+    <p>I think it's cool to automate point extraction. Because in past projects, I realized the importance of alignment in computer vision, but I've been manually extracting the correspondness, and it's been bugging me. What's even cooler is that in this project, we don't need hard skills or arithmetic to automate the process. While our eyes have been dominated by cutting-edge, complex theories, it's amazing to see these simple algorithms quickly get the job done so well.</p>
 </body>
 </html>
 
