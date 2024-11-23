@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <title>Project Gallery</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 40px;
+            background-color: #f4f4f4;
+        }
+
+        code {
+            background-color: #e0e0e0; /* Light grey background */
+            font-family: monospace; /* Monospace font for code */
+            font-size: 14px;
+            border-radius: 4px;  
+            padding: 2px;    
+        }
+        video {
+            width: 300px; /* 根据需要调整大小 */
+            height: auto;
+            display: block; /* 确保视频块级显示，可调整为其他显示方式 */
+        }
+        /* 可选：确保视频不显示任何控件 */
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+        .gallery-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); 
+            margin-top: 20px;
+            justify-items: center;
+            text-align: center;
+        }
+        .gallery-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-5 {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(5, 1fr); 
+            margin-top: 20px;
+            justify-items: center
+        }
+        .gallery-7 {
+            display: grid;
+            margin: 0 auto; 
+            grid-template-columns: repeat(7, 1fr); 
+            margin-top: 20px;
+            margin-bottom: 10px;
+            justify-items: center
+        }
+        .gallery-3 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-4 img {
+            width: 90%;
+            height: auto;
+            align-self: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-5 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        .gallery-7 img {
+            width: 100%;
+            height: auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        }
+        figure {
+            margin: 0;
+            text-align: center;
+        }
+        figcaption {
+            text-align: center;
+            font-size: 0.9em;
+            color: #343434;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .upside-down {
+            transform: rotate(180deg);
+            transition: transform 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <h2 style="text-align: center;">Fall 2024 CS 180 Project4</h2>
+    <h1>Fun With Diffusion Models!</h1>
+    <p style="color: gray;">By Yiyu Chen</p>
+    <h2 style="background-color: rgb(161, 161, 161); padding: 4px;">Part A: The Power of DiffusionModels</h2>
+    <h3>0: Setup</h3>
+    <p>In this Part, we use the <a href="https://huggingface.co/docs/diffusers/api/pipelines/deepfloyd_if">DeepFloyd IF</a>
+         diffusion model, which was trained for text-to-image conversion. DeepFloyd has two stages. The first stage produces images of size 64 x 64
+        and the second stage takes the outputs of the first stage and generates images of size 256 x 256.</p>
+
+    <p><b>Sampling from the Model</b></p>
+    <p>For a better understanding of the model, here are the outputs of the model for the three provided prompts in different stages.</p>
+    <pre style="font-family: monospace; text-indent: 20px;">
+    prompts = [ 
+        'an oil painting of a snowy mountain village', 
+        'a man wearing a hat', 
+        "a rocket ship", 
+        ]</pre>
+
+    <div class="gallery-3">
+            <figure style="width: 400px;">
+                <figcaption style="color: black; font-size: 17px;">An oil painting of a snowy mountain village</figcaption>
+            </figure>
+            <figure style="width: 400px;">
+                <figcaption style="color: black; font-size: 17px;">A man wearing a hat</figcaption>
+            </figure>
+            <figure style="width: 400px;">
+                <figcaption style="color: black; font-size: 17px;">A rocket ship</figcaption>
+            </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 64px;">
+            <img src="img/p0/village1-20-20.png" alt="snowy mountain village" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/man1-20-20.png" alt="man wearing a hat" style="width:64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/rocket1-20-20.png" alt="rocket ship" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 256px;">
+            <img src="img/p0/village2-20-20.png" alt="snowy mountain village" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/man2-20-20.png" alt="man wearing a hat" style="width:256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/rocket2-20-20.png" alt="rocket ship" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+    </div>
+    <p>The above images are generated when <code>num_inference_steps</code> of both stage are set to <b>20</b></p>
+    <p>All of the generated image reflect their text prompts well. At stage1, the content of the images was already visible, indicating that the 64x64 images were already of reasonably good quality, even if they were small and simpler. After stage2 the images evolved to a more elaborate and visually appealing stage.
+        Looking at them one by one, the final snowy village images lacks detail and looks a bit simple. The image of the man is the best one, with more realistic presentation. The image of the rocket is the simplest, basically just blocks of color and similar to a sketch even after it passed the stage 2.
+        I suspect that this result might due to the fact that the data used to train the model has more human-related image.
+    </p>
+    <p>Here are more image with different <code>num_inference_steps</code> </p>
+    <p>Stage 1: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 20; </span>   Stage 2: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 100</span></p>
+    <div class="gallery-3">
+        <figure style="width: 64px;">
+            <img src="img/p0/village1-20-100.png" alt="snowy mountain village" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/man1-20-100.png" alt="man wearing a hat" style="width:64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/rocket1-20-100.png" alt="rocket ship" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 256px;">
+            <img src="img/p0/village2-20-100.png" alt="snowy mountain village" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/man2-20-100.png" alt="man wearing a hat" style="width:256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/rocket2-20-100.png" alt="rocket ship" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+    </div>    
+
+    <p>Stage 1: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 100; </span>   Stage 2: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 20</span></p>
+    <div class="gallery-3">
+        <figure style="width: 64px;">
+            <img src="img/p0/village1-100-20.png" alt="snowy mountain village" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/man1-100-20.png" alt="man wearing a hat" style="width:64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/rocket1-100-20.png" alt="rocket ship" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 256px;">
+            <img src="img/p0/village2-100-20.png" alt="snowy mountain village" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/man2-100-20.png" alt="man wearing a hat" style="width:256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/rocket2-100-20.png" alt="rocket ship" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+    </div>    
+
+    <p>Stage 1: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 100; </span>   Stage 2: <span style="font-family: monospace; font-size: 16px;">num_inference_steps = 100</span></p>
+    <div class="gallery-3">
+        <figure style="width: 64px;">
+            <img src="img/p0/village1-100-100.png" alt="snowy mountain village" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/man1-100-100.png" alt="man wearing a hat" style="width:64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+        <figure style="width: 64px;">
+            <img src="img/p0/rocket1-100-100.png" alt="rocket ship" style="width: 64px;">
+            <figcaption>Stage 1</figcaption>
+        </figure>
+    </div>
+    <div class="gallery-3">
+        <figure style="width: 256px;">
+            <img src="img/p0/village2-100-100.png" alt="snowy mountain village" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/man2-100-100.png" alt="man wearing a hat" style="width:256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+        <figure style="width: 256px;">
+            <img src="img/p0/rocket2-100-100.png" alt="rocket ship" style="width: 256px;">
+            <figcaption>Stage 2</figcaption>
+        </figure>
+    </div>   
+    <p>Overall, using different <code>num_inference_steps</code> values would results in different images at Stage 1, but the results of the image generation and the values do not seem to have direct correlation. In stage 2 a larger <code>num_inference_steps</code> results in a more detailed image output</p> 
+    
+    <h3>1: Sampling Loops</h3>
+    <h3>1.1 Implementing the forward process</h3>
+    <p>A key part of diffusion is the forward process, which takes a clean image and adds noise to it. In this part, we define \(t \in [0, 999]\) and computing \(x_t = \sqrt{\bar{a}_t}x_0 + \sqrt{1 - \bar{a}_t}\epsilon \) where \(\epsilon \) is noise sampled from \(N(0,1)\). By this formula, \(t = 0\)  corresponds to a clean image, and larger \(t\) corresponds to more noise.</p>
+    <p>Here are the test image at different noise level:</p>
+
+    <div class="gallery-4">
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t0.png" alt="test image" style="width: 64px;">
+            <figcaption>Original Campanile (t = 0)</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t250.png" alt="noisy test image 250" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 250</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t500.png" alt="noisy test image 500" style="width: 64px;">
+            <figcaption>>Noisy Campanile at t = 500</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t750.png" alt="noisy test image 750" style="width: 64px;">
+            <figcaption>>Noisy Campanile at t = 750</figcaption>
+        </figure>
+    </div>
+    <h3>1.2 Classical Denoising</h3>
+    <p>The classical method is applying Gaussian blur filtering to each image, trying to remove the noise. Obviously, the result dosen't turn out well.</p>
+    <div class="gallery-3">
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t250.png" alt="noisy test image 250" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 250</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t500.png" alt="noisy test image 500" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 500</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t750.png" alt="noisy test image 750" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 750</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/b5-t250.png" alt="Gaussian Blur Denoising 250" style="width: 64px;">
+            <figcaption>Gaussian Blur Denoising at t = 250</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/b9-t500.png" alt="Gaussian Blur Denoising 500" style="width: 64px;">
+            <figcaption>Gaussian Blur Denoising at t = 500</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/b9-t750.png" alt="Gaussian Blur Denoising 750" style="width: 64px;">
+            <figcaption>Gaussian Blur Denoising at t = 750</figcaption>
+        </figure>
+    </div>
+
+    <h3>1.3 Implementing One Step Denoising</h3>
+    <p>Here, we use a pretrained diffusion model <code>stage_1.unet</code> to denoise. The model estimate noise in the noisy image. Then we remove the noise to obtain an estimate of the original image by using the above formula to work backwards. \(\hat{x}_0 = (x_t - \sqrt{1 - \bar{a}_t} * \hat{\epsilon}) / \sqrt{\bar{a}_t} \)</p>
+    <div class="gallery-3" >
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t250.png" alt="noisy test image 250" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 250</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t500.png" alt="noisy test image 500" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 500</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t750.png" alt="noisy test image 750" style="width: 64px;">
+            <figcaption>Noisy Campanile at t = 750</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/clean-250.png" alt="One Step Denoised 250" style="width: 64px;">
+            <figcaption>One Step Denoised Campanile at t = 250</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/clean-500.png" alt="One Step Denoised 500" style="width: 64px;">
+            <figcaption>One Step Denoised Campanile at t = 500</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/clean-750.png" alt="One Step Denoised 750" style="width: 64px;">
+            <figcaption>One Step Denoised Campanile at t = 750</figcaption>
+        </figure>
+    </div>
+
+    <h3>1.4 Implementing Iterative Denoising</h3>
+    <p>In part 1.3, we observed that the UNet excels at projecting noisy images onto the natural image manifold, though performance naturally declines as noise increases. However, diffusion models are designed to denoise iteratively. In this part, instead of walk through all 1000 timesteps(which would be computationally expensive), we implemented a faster approach by selecting a subset of timesteps and jumping at regular intervals (e.g., a stride of 30).</p>
+    <p>Transition Between Timesteps Process:</p>
+    <p>On the <b>i</b>-th step, we denoise from <code>t = strided_timesteps[i]</code> to 
+        <code>t' = strided_timesteps[i+1]</code>. This is governed by the following formula:</p>
+    <p>\[
+        x_{t'} =  \frac{\sqrt{\bar{\alpha}_{t'}} \beta_t}{1 - \bar{\alpha}_t}  x_0 
+        +   \frac{\sqrt{\alpha_t} (1 - \bar{\alpha}_{t'})}{1 - \bar{\alpha}_t}  x_t + v_\sigma
+
+        \]</p>
+        <p>Where:</p>
+        <ul>
+            <li>\(x_t\): the noisy image at timestep \(t\),</li>
+            <li>\(x_{t'}\): the less noisy image at timestep \(t'\),</li>
+            <li>\(\bar{a}_t, \bar{a}_{t'} \) : cumulative products of the alphas, related to noise variance,</li>
+            <li>\(x_0\): our current estimate of the clean image, obtained using a UNet,</li>
+            <li>\(v_{\sigma}\): additional random noise
+        </ul>
+    </div>
+
+    <div class="gallery-5">
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-it10.png" alt="denoise it10" style="width: 128px;">
+            <figcaption>Noisy Campanile at t = 690</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-it15.png" alt="denoise it15" style="width: 128px;">
+            <figcaption>Noisy Campanile at t = 540</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-it20.png" alt="denoise it120" style="width: 128px;">
+            <figcaption>Noisy Campanile at t = 390</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-it25.png" alt="denoise it25" style="width: 128px;">
+            <figcaption>Noisy Campanile at t = 240</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-it30.png" alt="denoise it30" style="width: 128px;">
+            <figcaption>Noisy Campanile at t = 90</figcaption>
+        </figure>
+    </div>
+
+    <div class="gallery-4">
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t0.png" alt="test image" style="width: 128px;">
+            <figcaption>Original Campanile</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-final.png" alt="iteratively denoised test image" style="width: 128px;">
+            <figcaption>Iteratively Denoised Campanile</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-one_step.png" alt="One-Step denoised test image" style="width: 128px;">
+            <figcaption>One-Step Denoised Campanile</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/4-blur.png" alt="gaussian blur denoised test image" style="width: 128px;">
+            <figcaption>Gaussian Blurred Campanile</figcaption>
+        </figure>
+    </div>
+
+    <h3>1.5 Diffusion Model Sampling</h3>
+    <p>By setting <code>i_start = 0</code> and passing in some random noise, we can get sampled images from the model. Here are some results: </p>
+    <div class = "gallery-5">
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.5-1.png" alt="sampled image 1" style="width: 128px;">
+            <figcaption>Sample 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.5-2.png" alt="sampled image 1" style="width: 128px;">
+            <figcaption>Sample 2</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.5-3.png" alt="sampled image 1" style="width: 128px;">
+            <figcaption>Sample 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.5-4.png" alt="sampled image 1" style="width: 128px;">
+            <figcaption>Sample 4</figcaption>
+        </figure>        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.5-5.png" alt="sampled image 1" style="width: 128px;">
+            <figcaption>Sample 5</figcaption>
+        </figure>
+    </div>
+    <p>As we can see, most of the generated images are blurry and gray.</p>
+
+    <h3>1.6 Classifier-Free Guidance (CFG)</h3>
+    <p> In order to greatly improve image quality, we can use Classifier-Free Guidance, in which we compute both a conditional noise estimate \(\epsilon_c\) and an unconditional noise estimate \(\epsilon_u\).
+        Then, the new noise noise estimate is:
+        \[ \epsilon = \epsilon  _u + \gamma (\epsilon _c - \epsilon _u )\]
+        where \(\gamma \) controls the strength of CFG. When \(\gamma > 1\), we magicly get higher quality images. Here are some sampled image with CFG using \(\gamma  = 7\):
+    </p>
+
+    <div class="gallery-7">
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-1.png" alt="sampled image CFG 1" style="width: 128px;">
+            <figcaption>Sample 1 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-2.png" alt="sampled image CFG 2" style="width: 128px;">
+            <figcaption>Sample 2 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-3.png" alt="sampled image CFG 3" style="width: 128px;">
+            <figcaption>Sample 3 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-4.png" alt="sampled image CFG 4" style="width: 128px;">
+            <figcaption>Sample 4 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-5.png" alt="sampled image CFG 5" style="width: 128px;">
+            <figcaption>Sample 5 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-7.png" alt="sampled image CFG 6" style="width: 128px;">
+            <figcaption>Sample 6 with CFG</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.6-8.png" alt="sampled image CFG 7" style="width: 128px;">
+            <figcaption>Sample 7 with CFG</figcaption>
+        </figure>
+    </div>
+
+    <h3>1.7 Image-to-image Translation</h3>
+    <p>The denoising process effectively allows us to make edits to existing images. The more noise we add, the larger the edit will be. To visualize this kind of editing, here are 3 group of images that get by using the given prompt <code>"a high quality photo"</code> at noise levels <code>[1, 3, 5, 7, 10, 20]</code> </p>
+
+    <div class="gallery-7">
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-1.png" alt="1.7.0-0-1" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-3.png" alt="1.7.0-0-3" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-5.png" alt="1.7.0-0-5" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-7.png" alt="1.7.0-0-7" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-10.png" alt="1.7.0-0-10" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-0-20.png" alt="1.7.0-0-20" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p1/1-t0.png" alt="Campanile" style="width: 128px;">
+            <figcaption>Campanile</figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-1.png" alt="1.7.0-0-1" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-3.png" alt="1.7.0-0-3" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-5.png" alt="1.7.0-0-5" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-7.png" alt="1.7.0-0-7" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-10.png" alt="1.7.0-0-10" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-20.png" alt="1.7.0-0-20" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-1-0.png" alt="Campanile" style="width: 128px;">
+            <figcaption>Castles</figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-1.png" alt="1.7.0-0-1" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-3.png" alt="1.7.0-0-3" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-5.png" alt="1.7.0-0-5" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-7.png" alt="1.7.0-0-7" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-10.png" alt="1.7.0-0-10" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-20.png" alt="1.7.0-0-20" style="width: 128px;">
+            <figcaption>SDEdit with i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.0-2-0.png" alt="Campanile" style="width: 128px;">
+            <figcaption>Ancient Gate</figcaption>
+        </figure>
+    </div>
+
+    <p>For the simpler image like Campanile, the images start to look similar to the input from <code>i_start= 5</code>, while the more complex images start to show similarity from <code>i_start= 10</code>.</p>
+
+    <h4>1.7.1 Editing Hand-Drawn and Web Images</h4>
+    <p>Now we start with hand-drawn or other non-realistic images and see how they can get onto the natural image. However, in my perspective, it seems not work very well.</p>
+    <p>Image from the web:</p>
+    <div class="gallery-7">
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web1.png" alt="web1" style="width: 128px;">
+            <figcaption>Bunny at i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web3.png" alt="web3" style="width: 128px;">
+            <figcaption>Bunny at i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web5.png" alt="web5" style="width: 128px;">
+            <figcaption>Bunny at i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web7.png" alt="web7" style="width: 128px;">
+            <figcaption>Bunny at i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web10.png" alt="web10" style="width: 128px;">
+            <figcaption>Bunny at i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web20.png" alt="web20" style="width: 128px;">
+            <figcaption>Bunny at i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-web.png" alt="web" style="width: 128px;">
+            <figcaption>Bunny</figcaption>
+        </figure>
+    </div>
+    <p>Hand drawn images</p>
+    <div class="gallery-7">
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-1.png" alt="hand1" style="width: 128px;">
+            <figcaption>Cat at i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-3.png" alt="hand3" style="width: 128px;">
+            <figcaption>Cat at i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-5.png" alt="hand5" style="width: 128px;">
+            <figcaption>Cat at i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-7.png" alt="hand7" style="width: 128px;">
+            <figcaption>Cat at i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-10.png" alt="hand10" style="width: 128px;">
+            <figcaption>Cat at i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-20.png" alt="hand20" style="width: 128px;">
+            <figcaption>Cat at i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand2-0.png" alt="hand-cat" style="width: 128px;">
+            <figcaption>Cat</figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-1.png" alt="hand1" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-3.png" alt="hand3" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-5.png" alt="hand5" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-7.png" alt="hand7" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-10.png" alt="hand10" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-20.png" alt="hadn20" style="width: 128px;">
+            <figcaption>Bouquet at i_start = 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.1-hand1-0.png" alt="hand-bouquet" style="width: 128px;">
+            <figcaption>Bouquet</figcaption>
+        </figure>
+    </div>
+    
+    <h4>1.7.2 Inpainting</h4>
+    <p>We can use run the diffusion denoising loop to implement inpainting. Given an image and a binary mask, we can create a new image that inside mask area have new content and outside keep the same. The implementation is that after each step, we reset the pixels as where the mask is 0 and add correct noise to them:
+        \[ x_t =  mask * x_t + (1 - mask) * \text{forward}(x_{orig}, t)
+        \]
+    </p>
+    <div class="gallery-4">
+        <!-- Campanile -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-1-0.png" alt="Campanile" style="width: 180px;">
+            <figcaption>Campanile</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-1-mask.png" alt="Campanile Mask" style="width: 180px;">
+            <figcaption>Mask</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-1-to_replace.png" alt="Campanile to_replace" style="width: 180px;">
+            <figcaption>Part to Replace</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-1.png" alt="Campanile Inpainted" style="width: 180px;">
+            <figcaption>Campanile Inpainted</figcaption>
+        </figure>
+        <!-- Mountain -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-2-0.png" alt="Mountain" style="width: 180px;">
+            <figcaption>Mountain</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-2-mask.png" alt="Mountain Mask" style="width: 180px;">
+            <figcaption>Mask</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-2-to_replace.png" alt="Mountain to_replace" style="width: 180px;">
+            <figcaption>Part to Replace</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-2.png" alt="Mountain Inpainted" style="width: 180px;">
+            <figcaption>Mountain Inpainted</figcaption>
+        </figure>
+        <!-- Geese -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-3-0.png" alt="Geese" style="width: 180px;">
+            <figcaption>Geese</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-3-mask.png" alt="Geese Mask" style="width: 180px;">
+            <figcaption>Mask</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-3-to_replace.png" alt="Geese to_replace" style="width: 180px;">
+            <figcaption>Part to Replace</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-3.png" alt="Geese Inpainted" style="width: 180px;">
+            <figcaption>Geese Inpainted</figcaption>
+        </figure>
+    </div>
+
+    <h4>1.7.3 Text-Conditional Image-to-image Translation</h4>
+    <p>In this part, we will do the same thing as SDEdit, but control the output with text prompt <code>"a rocket ship"</code> instead of using the defult setting <code>"a high quality photo"</code>. Influnced by both input image and text, the images should look like original image and also look like the text prompt. And with <code>i_start</code> growing, it should look more like the input image, while keeping the text information. </p>
+  
+    <div class="gallery-7">
+        <!-- Campanile -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-1.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-3.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-5.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-7.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-10.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-0-20.png" alt="1.7.3-0-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Campanile at noise level 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.2-1-0.png" alt="Campanile" style="width: 128px;">
+            <figcaption>Campanile</figcaption>
+        </figure>
+
+        <!-- Cake -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-1.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-3.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-5.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-7.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-10.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-20.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Cake at noise level 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-2-0.png" alt="1.7.3-1-1" style="width: 128px;">
+            <figcaption>Cake</figcaption>
+        </figure>
+
+        <!-- Candle -->
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-1.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 1</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-3.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 3</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-5.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 5</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-7.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 7</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-10.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 10</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-20.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Rocket Ship & Candle at noise level 20</figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p5/1.7.3-3-0.png" alt="1.7.3-3-1" style="width: 128px;">
+            <figcaption>Candle</figcaption>
+        </figure>
+    </div>
+
+    <h3>1.8 Visual Anagrams</h3>
+    <p>In this part, we create optical illusions with diffusion models. The illusionary image looks like one text promot, but when flipped upside down will looks like another. The algorithm is: </p>
+    <ol>
+        <li>Denoise image \(x_t\) at step \(t\) with the prompt \(p_1\), to obtain noise estimate \(\epsilon_1\). </li>
+        <li>Flip \(x_t\) upside down, then denoise with the prompt \(p_2\), to obtain noise estimate \(\epsilon_2\). </li>
+        <li>Flip \(\epsilon_2\) back, and average the two noise estimates. </li>
+    </ol>    
+    <p>
+    \[ \epsilon_1 = \text{UNet}(x_t, t, p_1)   \]
+    \[ \epsilon_2 = \text{UNet}(\text{filp}(x_t), t, p_2)  \]
+    \[\epsilon = (\epsilon_1 + \text{flip}(\epsilon_2) ) / 2\]
+    </p>
+
+    <div class="gallery-3">
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-1.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"an oil painting of people around a campfire"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-2.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"an oil painting of people around a campfire"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-3.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"an oil painting of people around a campfire"</code></figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-1.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"an oil painting of an old man"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-2.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"an oil painting of an old man"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-3.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"an oil painting of an old man"</code></figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-4.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"an oil painting of a snowy mountain village"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-5.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"a photo of the amalfi cost"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8.png" alt="1.8-1" style="width: 180px;">
+            <figcaption><code>"an oil painting of people around a campfire"</code></figcaption>
+        </figure>
+        
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-4.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"a photo of a dog"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8-5.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"an oil painting of people around a campfire"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.8.png" alt="1.8-1" style="width: 180px;" class="upside-down">
+            <figcaption><code>"a photo of the amalfi cost"</code></figcaption>
+        </figure>
+    </div>
+
+    <h3>1.9 Hybrid Images</h3>
+    <p>
+        In this part we create hybrid images with a diffusion model by combining low frequencies from one noise estimate and high frequencies of estimate with the other text prompt.
+        \[ \epsilon_1 = \text{UNet}(x_t, t, p_1)  \]
+        \[ \epsilon_2 = \text{UNet}(x_t, t, p_2)  \]
+        \[\epsilon = f_{low}(\epsilon_1) + f_{high}(\epsilon_2)\]
+    </p>
+    <p>The image on first line shows the effect of text prompt on low-frequency, while the second line shows high-frequency part with corresponding prompt.</p>
+
+    <div class="gallery-4">
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-5.png" alt="1.9" style="width: 64px;">
+            <figcaption><code>"a lithograph of a skull"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-1.png" alt="1.8-1" style="width: 64px;">
+            <figcaption><code>"a lithograph of waterfalls"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-6.png" alt="1.9" style="width: 64px;">
+            <figcaption><code>"a lithograph of a skull"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-3.png" alt="1.9" style="width: 64px;">
+            <figcaption><code>"an oil painting of a snowy mountain village"</code></figcaption>
+        </figure>
+
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-5.png" alt="1.8-1" style="width: 190px;">
+            <figcaption><code>"a lithograph of waterfalls"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-1.png" alt="1.9" style="width: 190px;">
+            <figcaption><code>"a lithograph of a skull"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-6.png" alt="1.8-1" style="width: 190px;">
+            <figcaption><code>"an oil painting of a snowy mountain village"</code></figcaption>
+        </figure>
+        <figure style="text-align: center;">
+            <img src="img/pA/p8/1.9-3.png" alt="1.8-3" style="width: 190px;">
+            <figcaption><code>"a rocket ship"</code></figcaption>
+        </figure>
+    </div>
+
+    <h2 style= "background-color: rgb(161, 161, 161); padding: 4px;">Part B: Diffusion Models from Scratch!</h2>
+    <h2>Part 1: Training a Single-Step Denoising UNet</h2>
+    <h3>1.1 Implementing the UNet</h3>
+    <p>The diagram shows the structure of the Unconditional UNet we implemented:</p>
+    <div style="text-align: center;">    
+        <img src="img/pB/unconditional_arch.png" alt="Unconditional UNet" style="width: 900px;">
+    </div>
+    <h3>1.2 Using the UNet to Train a Denoiser</h3>
+    <p>To train our denoiser, we need to generate training data pairs of a clean MNIST digit and a noisy image of digit. We generate the noisy image \(z\) using clean digit \(x\) and \(\sigma \in [0.0, 1.0]\):
+        \[ z = x + \sigma \epsilon, \text{where }~ \epsilon \sim N(0,1)
+        \]</p>
+
+    <p>Visualize the different noising processes:</p>
+    <div style="text-align: center">
+        <img src = "img/pB/Noisy.png" alt = "Nosing Process" style="width: 75%;">
+        <figcaption>Varying levels of noise on MNIST digits</figcaption>
+    </div>
+
+    <h4>1.2.1 Training</h4>
+    <p>Here are some setting for the training process:</p>
+    <ul>
+        <li>Noisy level: \(\sigma = 0.5\); Training epochs: 5</li>
+        <li>Dataset and dataloader: MNIST dataset with batch size: 256</li>
+        <li>Model: Use the UNet architecture defined in section 1.1 with recommended hidden dimension D = 128.</li>
+        <li>Optimizer: Use Adam optimizer with learning rate of 1e-4.</li>
+    </ul> 
+    <div style="text-align: center;">
+        <img src = "img/pB/Uncond_Training_Loss.png" alt = "Training Loss" >
+        <figcaption>Training Loss Curve</figcaption>      
+    </div>
+    <div class="gallery-2">
+        <figure  style="width: 550px;text-align: center;">
+            <img src="img/pB/epoch1.png" alt="epoch1">
+            <figcaption>Results on digits from the test set after 1 epoch of training</figcaption>
+        </figure>
+        <figure style="width: 550px;text-align: center;">
+            <img src="img/pB/epoch5.png" alt="epoch 5">
+            <figcaption>Results on digits from the test set after 5 epoch of trainingt</figcaption>
+        </figure>
+    </div>
+
+    <h4>1.2.2 Out-of-Distribution Testing</h4>
+    <p>Our denoiser was trained on MNIST digits noised with \(\sigma = 0.5\). Here are    
+        visualization of the denoiser results on test set digits with varying levels of noise.</p>
+
+    <div style="text-align: center;">
+        <img src = "img/pB/out-0.png" alt = "Out of distribution" >
+        <figcaption>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</figcaption>
+        <img src = "img/pB/out-1.png" alt = "Out of distribution" >
+        <figcaption>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</figcaption>
+        <img src = "img/pB/out-2.png" alt = "Out of distribution" >
+        <figcaption>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</figcaption>
+        <img src = "img/pB/out-3.png" alt = "Out of distribution" >
+        <figcaption>--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</figcaption>
+        <img src = "img/pB/out-4.png" alt = "Out of distribution" >        
+        <figcaption>Results on digits from the test set with varying noise levels.</figcaption>      
+    </div>
+       
+    <h2>Part 2: Training a Diffusion Model</h2>
+    <h3>2.1 Adding Time Conditioning to UNet</h3>
+    <p> In this Model, we inject scalar \(t\) into the UNet model decoder part to condition.</p>
+    <div style="text-align: center;">    
+        <img src="img/pB/conditional_arch.png" alt="Conditional UNet" style="width: 900px;">
+    </div>
+    <h3>2.2 Training the UNet</h3>
+    <div style="text-align: center;">
+        <img src = "img/pB/Algo1.png" alt = "Training Loss" style="width: 50%;" >
+        <figcaption>Algorithm 1. Training time-conditioned UNet</figcaption>   
+        <img src = "img/pB/Condi_Training_Loss.png" alt = "Training Loss" >
+        <figcaption>Time-Conditioned UNet training loss curve</figcaption>      
+    </div>
+
+    <h3>2.3 Sampling from the UNet</h3>
+    <div style="text-align: center;">
+        <img src = "img/pB/Algo2.png" alt = "Training Loss" style="width: 50%;" >
+        <figcaption>Algorithm 2. Sampling from time-conditioned UNet</figcaption>        
+    </div>
+    
+    <div class="gallery-2">
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_1.png" alt="Sampling from time-conditioned Epoch 1" >
+            <figcaption>Epoch 1</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_5.png" alt="Sampling from time-conditioned Epoch 5" >
+            <figcaption>Epoch 5</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_10.png" alt="Sampling from time-conditioned Epoch 10" >
+            <figcaption>Epoch 10</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_20.png" alt="Sampling from time-conditioned Epoch 20" >
+            <figcaption>Epoch 20</figcaption>
+        </figure>
+    </div>
+
+
+    <h3>2.4 Adding Class-Conditioning to UNet</h3>
+    <div style="text-align: center;">
+        <img src = "img/pB/Algo3.png" alt = "Training Loss" style="width: 50%;" >
+        <figcaption>Algorithm 3. Training class-conditioned UNet</figcaption>  
+        <img src = "img/pB/Class_Training_Loss.png" alt = "Training Loss" >
+        <figcaption>Class-conditioned UNet training loss curve</figcaption>            
+    </div>
+
+    <h3>2.5 Sampling from the Class-Conditioned UNet</h3>
+
+    <div style="text-align: center;">
+        <img src = "img/pB/Algo4.png" alt = "Training Loss" style="width: 50%;" >
+        <figcaption>Algorithm 4. Sampling from class-conditioned UNet</figcaption>        
+    </div>
+    
+    <div class="gallery-2">
+        <figure style="width: 500px;">
+            <img src="img/pB/CC_1.png" alt="Sampling from class-conditioned Epoch 1" >
+            <figcaption>Epoch 1</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/CC_5.png" alt="Sampling from class-conditioned Epoch 5" >
+            <figcaption>Epoch 5</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/CC_10.png" alt="Sampling from class-conditioned Epoch 10" >
+            <figcaption>Epoch 10</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/CC_20.png" alt="Sampling from class-conditioned Epoch 20" >
+            <figcaption>Epoch 20</figcaption>
+        </figure>
+    </div>
+
+    <h3>Bells & Whistles</h3>
+    <p>Sampling Gif</p>
+    <div class="gallery-2">
+
+        
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_denoise_epoch1.gif" alt="Sampling from class-conditioned Epoch 1" style="width: 500;" >
+            <figcaption>Time-Conditioned UNet Epoch 1</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_denoise_epoch5.gif" alt="Sampling from class-conditioned Epoch 5"  style="width: 500;" >
+            <figcaption>Time-Conditioned UNet Epoch 5</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_denoise_epoch10.gif" alt="Sampling from class-conditioned Epoch 10"  style="width: 500;" >
+            <figcaption>Time-Conditioned UNet Epoch 10</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/TC_denoise_epoch20.gif" alt="Sampling from class-conditioned Epoch 20"  style="width: 500;" >
+            <figcaption>Time-Conditioned UNet Epoch 20</figcaption>
+        </figure>
+        
+        <figure style="width: 500px;">
+            <img src="img/pB/denoise_epoch1.gif" alt="Sampling from class-conditioned Epoch 1" style="width: 500;" >
+            <figcaption>Class-Conditioned UNet Epoch 1</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/denoise_epoch5.gif" alt="Sampling from class-conditioned Epoch 5"  style="width: 500;" >
+            <figcaption>Class-Conditioned UNet Epoch 5</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/denoise_epoch10.gif" alt="Sampling from class-conditioned Epoch 10"  style="width: 500;" >
+            <figcaption>Class-Conditioned UNet Epoch 10</figcaption>
+        </figure>
+        <figure style="width: 500px;">
+            <img src="img/pB/denoise_epoch20.gif" alt="Sampling from class-conditioned Epoch 20"  style="width: 500;" >
+            <figcaption>Class-Conditioned UNet Epoch 20</figcaption>
+        </figure>
+    </div>
+
+
+
+
+</body>
+</html>
+
